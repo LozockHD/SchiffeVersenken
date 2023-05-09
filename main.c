@@ -75,6 +75,7 @@ int main(){
     system("cls");
 
     Spieler1Konfig();
+    laenge = 1; // Länge auf 1 zurücksetzen damit auch Spieler 2 seine schiffe konfigurieren kann
 
     printf("Spieler 2 Schiffe Konfiguration\n\n"); // Spieler 2 darf seine Schiffe plazieren:
     system("pause");
@@ -118,7 +119,8 @@ void Spieler1Konfig(){
             fuenfer = 0;
         }
 
-        back1: // Hier zurückgesetzt falls der gesetzte punkt schlecht gesetzt war
+        Eingabe: // Um zur Eingabe zurückzukehren
+
         system("cls"); // Ausgabe Löschen
 
         printf("%der Schiff:\n\n", laenge);
@@ -187,19 +189,24 @@ void Spieler1Konfig(){
 
         // Eingabe der richtung in n, o, s oder w
         while(1){
-            printf("\n\nNach Norden(n), Osten(o), Sueden(s) oder Westen(w): ");
+            printf("\n\nNach Norden(n), Osten(o), Sueden(s), Westen(w) oder zurueck(x): ");
             scanf("%c", &richtung);
 
             if (richtung == 'n' || richtung == 'o' || richtung == 's' || richtung == 'w') {
-                if (richtung == 'n' && (y-97)-laenge >= 0 || richtung == 'o' && (x-1)+laenge <= 9 || richtung == 's' && (y-97)+laenge <= 9 || richtung == 'w' && (x-1)-laenge >= 0){
+                if (richtung == 'n' && (y-96)-laenge >= 0 || richtung == 'o' && (x)+laenge <= 9 || richtung == 's' && (y-98)+laenge <= 9 || richtung == 'w' && (x-2)-laenge >= 0){
                     break;
                 }
                 else {
+                    back1: // Hier zurückgesetzt falls ein Schiff im Weg war
                     printf("Error (waehle eine andere Richtung)");
                 }
             }
             else {
                 printf("Error (n, o, s oder w)\n");
+            }
+            if (richtung == 'x'){ // Um die Eingabe zurückzusetzen
+                block1[x-1][y-97] = 'o'; // Um den Ausgangspunkt zurückzusetzen
+                goto Eingabe;
             }
 
             while(getchar()!='\n'); // Eingabepuffer zurücksetzen
@@ -207,45 +214,33 @@ void Spieler1Konfig(){
 
         // Testen ob ein Schiff im Weg ist:
         if (richtung == 'n'){ // Wenn es nach Norden geht:
-            for (int i = (y-97); i <= (y-97)-laenge; i--){ // j == x; i == y
-                if (block1[x-1][i] == 'S'){
-                    block1[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double i = (y-97); i >= (y-97)-laenge; i--){
+                if (block1[x-1][(int)i] == 'S'){
+                    block1[x-1][y-97] == 'o';
                     goto back1;
                 }
             }
         }
         else if (richtung == 'o'){ // Wenn es nach Osten geht:
-            for (int j = (x-1); j <= laenge+(x-1); j++){ // j == x; i == y
-                if (block1[j][y-97] == 'S'){
-                    block1[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double j = (x-1); j <= (x-1)+laenge; j++){
+                if (block1[(int)j][y-97] == 'S'){
+                    block1[x-1][y-97] == 'o';
                     goto back1;
                 }
             }
         }
         else if (richtung == 's'){ // Wenn es nach Süden geht:
-            for (int i = (y-97); i <= laenge+(y-97); i++){ // j == x; i == y
-                if (block1[x-1][i] == 'S'){
-                    block1[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double i = (y-97); i <= (y-97)+laenge; i++){
+                if (block1[x-1][(int)i] == 'S'){
+                    block1[x-1][y-97] == 'o';
                     goto back1;
                 }
             }
         }
         else if (richtung == 'w'){ // Wenn es nach Westen geht:
-            for (int j = (x-1); j == laenge-(x-1); j--){ // j == x; i == y
-                if (block1[j][y-97] == 'S'){
-                    block1[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punktw)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double j = (x-1); j >= (x)-laenge; j--){
+                if (block1[(int)j][y-97] == 'S'){
+                    block1[x-1][y-97] == 'o';
                     goto back1;
                 }
             }
@@ -453,10 +448,9 @@ void Spieler2Konfig(){
     int dreier = 1;
     int vierer = 1;
     int fuenfer = 1;
-    int laenge = 1;
 
     while(laenge != 5){ // Wird wiederhohlt bis das längste Schiff vergeben wurde
-        if (zweier1 == 1){// Hier wird getestet welche länge dran ist
+        if (zweier1 == 1){ // Welche Schifflänge wird benötigt:
             laenge = 2;
             zweier1 = 0;
         }
@@ -477,8 +471,9 @@ void Spieler2Konfig(){
             fuenfer = 0;
         }
 
-        back2:
-        system("cls");
+        Eingabe2: // Um zur Eingabe2 zurückzukehren
+
+        system("cls"); // Ausgabe Löschen
 
         printf("%der Schiff:\n\n", laenge);
 
@@ -498,9 +493,9 @@ void Spieler2Konfig(){
             }
         }
 
-        while(1){
+        while(1){ // Koordinateneingabe
             printf("\n\nAusgangspunkt Koordinate: ");
-            scanf("%s", &koortdinaten); // Eingabe der Koordinaten XY
+            scanf("%s", &koortdinaten); // Eingabe2 der Koordinaten XY
 
             sscanf(koortdinaten, "%c%d", &y, &x); // In koordinaten X und Y aufteilen
 
@@ -514,6 +509,7 @@ void Spieler2Konfig(){
         }
 
         system("cls"); // Ausgabe Löschen
+
         printf("In welche Himmelsrichtung soll das Schiff zeigen?\n\n");
 
         for (int i = 0; i <= 9; i++){ // i == y
@@ -541,68 +537,62 @@ void Spieler2Konfig(){
 
         vergleich = 1;
 
-        while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+        while(getchar()!='\n'); // Eingabe2puffer zurücksetzen
 
+        // Eingabe2 der richtung in n, o, s oder w
         while(1){
-            printf("\n\nNach Norden(n), Osten(o), Sueden(s) oder Westen(w): ");
+            printf("\n\nNach Norden(n), Osten(o), Sueden(s), Westen(w) oder zurueck(x): ");
             scanf("%c", &richtung);
 
             if (richtung == 'n' || richtung == 'o' || richtung == 's' || richtung == 'w') {
-                if (richtung == 'n' && x-1 >= 0 && x-1 <= 9 && y-(96+laenge) >= 0 && y-(96+laenge) <= 9 || richtung == 'o' && (x-1+laenge) >= 0 && x-(1+laenge) <= 9 && y-97 >= 0 && y-97 <= 9 || richtung == 's' && x-1 >= 0 && x-1 <= 9 && y-(97-laenge) >= 0 && y-(97-laenge) <= 9 || richtung == 'w' && x-(1+laenge) >= 0 && x-(1+laenge) <= 9 && y-97 >= 0 && y-97 <= 9){
+                if (richtung == 'n' && (y-96)-laenge >= 0 || richtung == 'o' && (x)+laenge <= 9 || richtung == 's' && (y-98)+laenge <= 9 || richtung == 'w' && (x-2)-laenge >= 0){
                     break;
                 }
                 else {
-                    printf("Error (waehle eine andere Richtung)\n");
+                    back2: // Hier zurückgesetzt falls ein Schiff im Weg war
+                    printf("Error (waehle eine andere Richtung)");
                 }
             }
             else {
                 printf("Error (n, o, s oder w)\n");
             }
+            if (richtung == 'x'){ // Um die Eingabe2 zurückzusetzen
+                block2[x-1][y-97] = 'o'; // Um den Ausgangspunkt zurückzusetzen
+                goto Eingabe2;
+            }
 
-            while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            while(getchar()!='\n'); // Eingabe2puffer zurücksetzen
         }
 
         // Testen ob ein Schiff im Weg ist:
         if (richtung == 'n'){ // Wenn es nach Norden geht:
-            for (int i = (y-97); i >= laenge-(y-97); i--){ // j == x; i == y
-                if (block2[x-1][i] == 'S'){
-                    block2[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um einen neuen Punkt auszuwaehlen...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double i = (y-97); i >= (y-97)-laenge; i--){
+                if (block2[x-1][(int)i] == 'S'){
+                    block2[x-1][y-97] == 'o';
                     goto back2;
                 }
             }
         }
         else if (richtung == 'o'){ // Wenn es nach Osten geht:
-            for (int j = (x-1); j <= laenge+(x-1); j++){ // j == x; i == y
-                if (block2[j][y-97] == 'S'){
-                    block2[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double j = (x-1); j <= (x-1)+laenge; j++){
+                if (block2[(int)j][y-97] == 'S'){
+                    block2[x-1][y-97] == 'o';
                     goto back2;
                 }
             }
         }
-        if (richtung == 's'){ // Wenn es nach Süden geht:
-            for (int i = (y-97); i <= laenge+(y-97); i++){ // j == x; i == y
-                if (block2[x-1][i] == 'S'){
-                    block2[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+        else if (richtung == 's'){ // Wenn es nach Süden geht:
+            for (double i = (y-97); i <= (y-97)+laenge; i++){
+                if (block2[x-1][(int)i] == 'S'){
+                    block2[x-1][y-97] == 'o';
                     goto back2;
                 }
             }
         }
         else if (richtung == 'w'){ // Wenn es nach Westen geht:
-            for (int j = (x-1); j >= laenge-(x-1); j--){ // j == x; i == y
-                if (block2[j][y-97] == 'S'){
-                    block2[x-1][y-97] = 'o';
-                    printf("Error (waehle einen anderen Punkt)\n\nDruecke eine beliebige Taste um Fortzufahren...");
-                    system("pause >NULL");
-                    while(getchar()!='\n'); // Eingabepuffer zurücksetzen
+            for (double j = (x-1); j >= (x)-laenge; j--){
+                if (block2[(int)j][y-97] == 'S'){
+                    block2[x-1][y-97] == 'o';
                     goto back2;
                 }
             }
